@@ -1,8 +1,8 @@
 using CsvHelper.Configuration.Attributes;
 
-namespace SistemaAnalisisOpiniones.Csv;
+namespace SistemaAnalisisOpiniones.Domain.Dtos;
 
-public class ClienteCsv
+public class ClienteDto
 {
     [Name("IdCliente")] public string? IdCliente { get; set; }
     [Name("Nombre")] public string? Nombre { get; set; }

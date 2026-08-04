@@ -1,4 +1,4 @@
-using SistemaAnalisisOpiniones.Etl;
+using SistemaAnalisisOpiniones.Application;
 
 namespace SistemaAnalisisOpiniones;
 
@@ -21,17 +21,17 @@ public class Worker : BackgroundService
 
         try
         {
-            var results = await _runner.RunAsync(stoppingToken);
+            var informe = await _runner.RunAsync(stoppingToken);
 
-            var summary = ReportPrinter.BuildSummary(results);
-            var detail = ReportPrinter.BuildRejectedDetail(results, maxPerTable: 15);
+            Console.WriteLine(ReportPrinter.BuildExtractionSummary(informe.Extracciones));
+            Console.WriteLine(ReportPrinter.BuildSummary(informe.Cargas));
 
-            Console.WriteLine(summary);
+            var detail = ReportPrinter.BuildRejectedDetail(informe.Cargas, maxPerTable: 15);
             if (!string.IsNullOrWhiteSpace(detail))
                 Console.WriteLine(detail);
 
             var logPath = Path.Combine(AppContext.BaseDirectory, "etl_rejected_log.csv");
-            await File.WriteAllTextAsync(logPath, ReportPrinter.BuildFullRejectedLog(results), stoppingToken);
+            await File.WriteAllTextAsync(logPath, ReportPrinter.BuildFullRejectedLog(informe.Cargas), stoppingToken);
             Console.WriteLine($"Log completo de registros rechazados: {logPath}");
 
             _logger.LogInformation("Proceso ETL finalizado.");

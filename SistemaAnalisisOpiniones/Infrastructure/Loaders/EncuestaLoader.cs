@@ -1,21 +1,18 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using SistemaAnalisisOpiniones.Csv;
-using SistemaAnalisisOpiniones.Infrastructure;
-using SistemaAnalisisOpiniones.Models;
+using SistemaAnalisisOpiniones.Domain.Dtos;
+using SistemaAnalisisOpiniones.Domain.Models;
 
-namespace SistemaAnalisisOpiniones.Etl;
+namespace SistemaAnalisisOpiniones.Infrastructure.Loaders;
 
-public class EncuestaLoader : CsvLoaderBase<EncuestaCsv>
+public class EncuestaLoader : StagingLoaderBase<EncuestaDto>
 {
     private static readonly HashSet<string> ClasificacionesValidas =
         new(StringComparer.OrdinalIgnoreCase) { "Positiva", "Negativa", "Neutra" };
 
-    protected override string CsvFileName => "surveys_part1.csv";
     protected override string TableName => "Encuestas";
 
-    public EncuestaLoader(IOptions<EtlOptions> options, ILogger<EncuestaLoader> logger) : base(options, logger) { }
+    public EncuestaLoader(ILogger<EncuestaLoader> logger) : base(logger) { }
 
     protected override async Task PreloadAsync(SqlConnection connection, EtlContext context, HashSet<string> seenKeys, CancellationToken ct)
     {
@@ -24,7 +21,7 @@ public class EncuestaLoader : CsvLoaderBase<EncuestaCsv>
     }
 
     protected override async Task ProcessRowAsync(
-        EncuestaCsv record, int rowNumber, SqlConnection connection, EtlContext context,
+        EncuestaDto record, int rowNumber, SqlConnection connection, EtlContext context,
         HashSet<string> seenKeys, EtlResult result, CancellationToken ct)
     {
         var idOpinionTexto = record.IdOpinion?.Trim();

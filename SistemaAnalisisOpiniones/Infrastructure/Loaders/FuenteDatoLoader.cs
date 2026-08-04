@@ -1,18 +1,15 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using SistemaAnalisisOpiniones.Csv;
-using SistemaAnalisisOpiniones.Infrastructure;
-using SistemaAnalisisOpiniones.Models;
+using SistemaAnalisisOpiniones.Domain.Dtos;
+using SistemaAnalisisOpiniones.Domain.Models;
 
-namespace SistemaAnalisisOpiniones.Etl;
+namespace SistemaAnalisisOpiniones.Infrastructure.Loaders;
 
-public class FuenteDatoLoader : CsvLoaderBase<FuenteDatoCsv>
+public class FuenteDatoLoader : StagingLoaderBase<FuenteDatoDto>
 {
-    protected override string CsvFileName => "fuente_datos.csv";
     protected override string TableName => "FuenteDatos";
 
-    public FuenteDatoLoader(IOptions<EtlOptions> options, ILogger<FuenteDatoLoader> logger) : base(options, logger) { }
+    public FuenteDatoLoader(ILogger<FuenteDatoLoader> logger) : base(logger) { }
 
     protected override async Task PreloadAsync(SqlConnection connection, EtlContext context, HashSet<string> seenKeys, CancellationToken ct)
     {
@@ -21,7 +18,7 @@ public class FuenteDatoLoader : CsvLoaderBase<FuenteDatoCsv>
     }
 
     protected override async Task ProcessRowAsync(
-        FuenteDatoCsv record, int rowNumber, SqlConnection connection, EtlContext context,
+        FuenteDatoDto record, int rowNumber, SqlConnection connection, EtlContext context,
         HashSet<string> seenKeys, EtlResult result, CancellationToken ct)
     {
         var id = record.IdFuente?.Trim();

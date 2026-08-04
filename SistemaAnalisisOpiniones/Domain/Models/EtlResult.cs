@@ -1,4 +1,4 @@
-namespace SistemaAnalisisOpiniones.Models;
+namespace SistemaAnalisisOpiniones.Domain.Models;
 
 public class RejectedRecord
 {

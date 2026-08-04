@@ -1,47 +1,34 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using SistemaAnalisisOpiniones.Infrastructure;
-using SistemaAnalisisOpiniones.Models;
+using SistemaAnalisisOpiniones.Domain.Models;
 
-namespace SistemaAnalisisOpiniones.Etl;
+namespace SistemaAnalisisOpiniones.Infrastructure.Loaders;
 
-public abstract class CsvLoaderBase<TCsv>
+/// <summary>
+/// Plantilla de carga al staging: valida fila a fila los registros ya
+/// extraídos, deduplica contra la base de datos y registra los rechazados.
+/// </summary>
+public abstract class StagingLoaderBase<TDto>
 {
-    protected readonly EtlOptions Options;
     protected readonly ILogger Logger;
 
-    protected abstract string CsvFileName { get; }
     protected abstract string TableName { get; }
 
-    protected CsvLoaderBase(IOptions<EtlOptions> options, ILogger logger)
-    {
-        Options = options.Value;
-        Logger = logger;
-    }
+    protected StagingLoaderBase(ILogger logger) => Logger = logger;
 
-    public async Task<EtlResult> RunAsync(SqlConnection connection, EtlContext context, CancellationToken ct)
+    public async Task<EtlResult> RunAsync(
+        IReadOnlyList<TDto> registros,
+        SqlConnection connection,
+        EtlContext context,
+        CancellationToken ct)
     {
         var result = new EtlResult { TableName = TableName };
-        var path = Path.Combine(AppContext.BaseDirectory, Options.DataFolder, CsvFileName);
-
-        List<TCsv> records;
-        try
-        {
-            records = CsvFileReader.Read<TCsv>(path);
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "No se pudo leer el archivo de origen para {Table}", TableName);
-            Reject(result, 0, CsvFileName, $"Error leyendo el archivo de origen: {ex.Message}");
-            return result;
-        }
 
         var seenKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         await PreloadAsync(connection, context, seenKeys, ct);
 
         var rowNumber = 1;
-        foreach (var record in records)
+        foreach (var record in registros)
         {
             rowNumber++;
             result.Processed++;
@@ -63,7 +50,7 @@ public abstract class CsvLoaderBase<TCsv>
         => Task.CompletedTask;
 
     protected abstract Task ProcessRowAsync(
-        TCsv record,
+        TDto record,
         int rowNumber,
         SqlConnection connection,
         EtlContext context,

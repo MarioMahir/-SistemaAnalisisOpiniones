@@ -1,18 +1,15 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using SistemaAnalisisOpiniones.Csv;
-using SistemaAnalisisOpiniones.Infrastructure;
-using SistemaAnalisisOpiniones.Models;
+using SistemaAnalisisOpiniones.Domain.Dtos;
+using SistemaAnalisisOpiniones.Domain.Models;
 
-namespace SistemaAnalisisOpiniones.Etl;
+namespace SistemaAnalisisOpiniones.Infrastructure.Loaders;
 
-public class ComentarioSocialLoader : CsvLoaderBase<ComentarioSocialCsv>
+public class ComentarioSocialLoader : StagingLoaderBase<ComentarioSocialDto>
 {
-    protected override string CsvFileName => "social_comments.csv";
     protected override string TableName => "ComentariosSociales";
 
-    public ComentarioSocialLoader(IOptions<EtlOptions> options, ILogger<ComentarioSocialLoader> logger) : base(options, logger) { }
+    public ComentarioSocialLoader(ILogger<ComentarioSocialLoader> logger) : base(logger) { }
 
     protected override async Task PreloadAsync(SqlConnection connection, EtlContext context, HashSet<string> seenKeys, CancellationToken ct)
     {
@@ -21,7 +18,7 @@ public class ComentarioSocialLoader : CsvLoaderBase<ComentarioSocialCsv>
     }
 
     protected override async Task ProcessRowAsync(
-        ComentarioSocialCsv record, int rowNumber, SqlConnection connection, EtlContext context,
+        ComentarioSocialDto record, int rowNumber, SqlConnection connection, EtlContext context,
         HashSet<string> seenKeys, EtlResult result, CancellationToken ct)
     {
         var id = record.IdComment?.Trim();

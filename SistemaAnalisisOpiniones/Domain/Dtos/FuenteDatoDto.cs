@@ -1,8 +1,8 @@
 using CsvHelper.Configuration.Attributes;
 
-namespace SistemaAnalisisOpiniones.Csv;
+namespace SistemaAnalisisOpiniones.Domain.Dtos;
 
-public class FuenteDatoCsv
+public class FuenteDatoDto
 {
     [Name("IdFuente")] public string? IdFuente { get; set; }
     [Name("TipoFuente")] public string? TipoFuente { get; set; }

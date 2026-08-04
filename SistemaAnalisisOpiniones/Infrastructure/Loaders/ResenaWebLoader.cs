@@ -1,18 +1,15 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using SistemaAnalisisOpiniones.Csv;
-using SistemaAnalisisOpiniones.Infrastructure;
-using SistemaAnalisisOpiniones.Models;
+using SistemaAnalisisOpiniones.Domain.Dtos;
+using SistemaAnalisisOpiniones.Domain.Models;
 
-namespace SistemaAnalisisOpiniones.Etl;
+namespace SistemaAnalisisOpiniones.Infrastructure.Loaders;
 
-public class ResenaWebLoader : CsvLoaderBase<ResenaWebCsv>
+public class ResenaWebLoader : StagingLoaderBase<ResenaWebDto>
 {
-    protected override string CsvFileName => "web_reviews.csv";
     protected override string TableName => "ResenasWeb";
 
-    public ResenaWebLoader(IOptions<EtlOptions> options, ILogger<ResenaWebLoader> logger) : base(options, logger) { }
+    public ResenaWebLoader(ILogger<ResenaWebLoader> logger) : base(logger) { }
 
     protected override async Task PreloadAsync(SqlConnection connection, EtlContext context, HashSet<string> seenKeys, CancellationToken ct)
     {
@@ -21,7 +18,7 @@ public class ResenaWebLoader : CsvLoaderBase<ResenaWebCsv>
     }
 
     protected override async Task ProcessRowAsync(
-        ResenaWebCsv record, int rowNumber, SqlConnection connection, EtlContext context,
+        ResenaWebDto record, int rowNumber, SqlConnection connection, EtlContext context,
         HashSet<string> seenKeys, EtlResult result, CancellationToken ct)
     {
         var id = record.IdReview?.Trim();

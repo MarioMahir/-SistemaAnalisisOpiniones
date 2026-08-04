@@ -1,16 +1,38 @@
 using System.Text;
-using SistemaAnalisisOpiniones.Models;
+using SistemaAnalisisOpiniones.Domain.Models;
 
-namespace SistemaAnalisisOpiniones.Etl;
+namespace SistemaAnalisisOpiniones.Application;
 
 public static class ReportPrinter
 {
+    public static string BuildExtractionSummary(IReadOnlyList<ResultadoExtraccion> extracciones)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine();
+        sb.AppendLine("========================================================================");
+        sb.AppendLine("                    RESUMEN DE LA FASE DE EXTRACCIÓN");
+        sb.AppendLine("========================================================================");
+        sb.AppendLine($"{"Fuente",-38}{"Registros",12}{"Duración",12}{"Estado",10}");
+        sb.AppendLine(new string('-', 72));
+
+        foreach (var e in extracciones)
+        {
+            var estado = e.Exitoso ? "OK" : "ERROR";
+            sb.AppendLine($"{e.Fuente,-38}{e.RegistrosExtraidos,12}{e.DuracionMs + " ms",12}{estado,10}");
+            if (!e.Exitoso && !string.IsNullOrWhiteSpace(e.Error))
+                sb.AppendLine($"    Motivo: {e.Error}");
+        }
+
+        sb.AppendLine("========================================================================");
+        return sb.ToString();
+    }
+
     public static string BuildSummary(IReadOnlyList<EtlResult> results)
     {
         var sb = new StringBuilder();
         sb.AppendLine();
         sb.AppendLine("========================================================================");
-        sb.AppendLine("                    RESUMEN DEL PROCESO ETL");
+        sb.AppendLine("                    RESUMEN DE LA CARGA AL STAGING");
         sb.AppendLine("        Sistema de Análisis de Opiniones de Clientes");
         sb.AppendLine("========================================================================");
         sb.AppendLine($"{"Tabla",-22}{"Procesados",12}{"Insertados",12}{"Rechazados",12}");

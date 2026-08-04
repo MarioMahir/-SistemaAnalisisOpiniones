@@ -1,18 +1,15 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using SistemaAnalisisOpiniones.Csv;
-using SistemaAnalisisOpiniones.Infrastructure;
-using SistemaAnalisisOpiniones.Models;
+using SistemaAnalisisOpiniones.Domain.Dtos;
+using SistemaAnalisisOpiniones.Domain.Models;
 
-namespace SistemaAnalisisOpiniones.Etl;
+namespace SistemaAnalisisOpiniones.Infrastructure.Loaders;
 
-public class ClienteLoader : CsvLoaderBase<ClienteCsv>
+public class ClienteLoader : StagingLoaderBase<ClienteDto>
 {
-    protected override string CsvFileName => "clients.csv";
     protected override string TableName => "Clientes";
 
-    public ClienteLoader(IOptions<EtlOptions> options, ILogger<ClienteLoader> logger) : base(options, logger) { }
+    public ClienteLoader(ILogger<ClienteLoader> logger) : base(logger) { }
 
     protected override async Task PreloadAsync(SqlConnection connection, EtlContext context, HashSet<string> seenKeys, CancellationToken ct)
     {
@@ -25,7 +22,7 @@ public class ClienteLoader : CsvLoaderBase<ClienteCsv>
     }
 
     protected override async Task ProcessRowAsync(
-        ClienteCsv record, int rowNumber, SqlConnection connection, EtlContext context,
+        ClienteDto record, int rowNumber, SqlConnection connection, EtlContext context,
         HashSet<string> seenKeys, EtlResult result, CancellationToken ct)
     {
         var id = record.IdCliente?.Trim();
