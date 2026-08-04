@@ -1,0 +1,33 @@
+flowchart LR
+    subgraph Fuentes["Fuentes de datos"]
+        CSV["Archivos CSV<br/>Encuestas internas<br/>y catálogos"]
+        BD[("SQL Server<br/>TiendaWebOrigen<br/>Reseñas del sitio web")]
+        API["API REST<br/>TiendaSocialApi<br/>Comentarios sociales"]
+    end
+
+    subgraph WS["Servicio ETL — Worker Service .NET 8"]
+        direction TB
+        subgraph EXT["Extractores (IExtractor)"]
+            direction LR
+            CE["CsvExtractor<br/>CsvHelper"]
+            DE["DatabaseExtractor<br/>ADO.NET"]
+            AE["ApiExtractor<br/>IHttpClientFactory"]
+        end
+        RUN["EtlRunner<br/>Extracción en paralelo (Task.WhenAll)<br/>Validación y carga secuencial"]
+        LOAD["Loaders de staging<br/>Deduplicación e integridad referencial"]
+        EXT --> RUN --> LOAD
+    end
+
+    STG[("SQL Server<br/>SistemaAnalisisOpiniones<br/>Staging")]
+    DW[("SQL Server<br/>SistemaAnalisisOpiniones_DW<br/>BD analítica — modelo estrella")]
+    DASH["Módulo de visualización<br/>Dashboard"]
+
+    CSV -->|CsvHelper| CE
+    BD -->|"SELECT (consulta configurable)"| DE
+    API -->|"GET /api/comments (JSON)"| AE
+    LOAD -->|"INSERT parametrizado"| STG
+    STG -.->|"Transformación y carga<br/>(fase futura del ETL)"| DW
+    DW -.-> DASH
+
+    style DW stroke-dasharray: 5 5
+    style DASH stroke-dasharray: 5 5
