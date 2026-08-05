@@ -485,3 +485,6 @@ $RECYCLE.BIN/
 
 # Log de rechazados generado por el ETL
 etl_rejected_log.csv
+
+# Documentacion de entrega (se entrega por la plataforma, no en el repo)
+docs/

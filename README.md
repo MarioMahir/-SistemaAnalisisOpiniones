@@ -13,8 +13,7 @@ Worker Service en **.NET 8** que implementa la fase de **extracción (E de ETL)*
 ```
 ├── SistemaAnalisisOpiniones/   Worker Service ETL (Domain / Application / Infrastructure / Configuration)
 ├── TiendaSocialApi/            Minimal API que expone los comentarios sociales (puerto 5180)
-├── scripts/                    Creación y siembra de la BD origen TiendaWebOrigen
-└── docs/                       Documento técnico y diagramas de arquitectura y flujo
+└── scripts/                    Creación y siembra de la BD origen TiendaWebOrigen
 ```
 
 ## Requisitos
@@ -49,4 +48,4 @@ dotnet user-secrets set "Fuentes:BaseDatos:ConnectionString" "..." --project Sis
 
 ## Documentación
 
-El documento técnico completo (arquitectura, flujo, justificación de decisiones y evidencias) está en [`docs/documento_tecnico.md`](docs/documento_tecnico.md) y su versión Word en `docs/DocumentoTecnico.docx`.
+El documento técnico completo (arquitectura, diagrama de flujo, justificación de decisiones y evidencias) se entrega por separado en formato Word junto con esta actividad.
