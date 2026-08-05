@@ -10,6 +10,7 @@
 | **Matrícula** | 2025-1035 |
 | **Fecha** | Agosto 2026 |
 | **Tecnología** | Worker Service — .NET 8 |
+| **Repositorio** | https://github.com/MarioMahir/-SistemaAnalisisOpiniones |
 
 ---
 
@@ -162,6 +163,8 @@ TOTAL                         3500        2627         873
 **Nota sobre los rechazos:** los datos de ejemplo tienen una inconsistencia conocida entre fuentes — los catálogos usan IDs numéricos (`1`, `2`, …) mientras que las reseñas y comentarios referencian IDs con prefijo (`C007`, `P016`). El ETL detecta correctamente esa falta de integridad referencial y rechaza los registros con su motivo en lugar de insertar datos huérfanos, que es exactamente el comportamiento deseado de una fase de validación. Unificar el esquema de IDs de los archivos fuente resolvería los rechazos sin cambiar el código.
 
 ## 8. Ejecución del proyecto
+
+El código fuente completo está disponible en el repositorio de GitHub: https://github.com/MarioMahir/-SistemaAnalisisOpiniones
 
 ```bash
 # 1. Crear y sembrar la base de datos origen (una sola vez)
