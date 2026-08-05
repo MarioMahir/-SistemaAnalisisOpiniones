@@ -18,7 +18,6 @@
 
 **Fecha de entrega:** 05/08/2026
 
----
 
 **Enlace al repositorio de GitHub con el código fuente del Worker Service (.NET 8):**
 

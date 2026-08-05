@@ -20,7 +20,9 @@
 
 **Repositorio de GitHub:** https://github.com/MarioMahir/-SistemaAnalisisOpiniones
 
----
+```{=openxml}
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>
+```
 
 ## 1. Introducción
 
@@ -34,7 +36,7 @@ El proceso se implementó como un **Worker Service en .NET 8** que extrae de las
 
 ## 2. Diagrama de arquitectura
 
-![Diagrama de arquitectura](diagramas/arquitectura.png)
+![](diagramas/arquitectura.png)
 
 Componentes principales:
 
@@ -52,7 +54,7 @@ La base analítica (`SistemaAnalisisOpiniones_DW`, modelo estrella ya diseñado 
 
 ## 3. Diagrama de flujo del proceso
 
-![Diagrama de flujo](diagramas/flujo.png)
+![](diagramas/flujo.png)
 
 El proceso tiene dos fases claramente separadas:
 
