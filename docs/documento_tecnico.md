@@ -1,16 +1,24 @@
-# Documento Técnico
+![](diagramas/logo_itla.png){width="5.18in"}
 
-## Creación de la Arquitectura y Desarrollo del Proceso de Extracción
+**Presentación**
 
-**Sistema de Análisis de Opiniones de Clientes**
+**Nombres:** Mario Alejandro
 
-| | |
-|---|---|
-| **Estudiante** | Mario Sabala |
-| **Matrícula** | 2025-1035 |
-| **Fecha** | Agosto 2026 |
-| **Tecnología** | Worker Service — .NET 8 |
-| **Repositorio** | https://github.com/MarioMahir/-SistemaAnalisisOpiniones |
+**Apellidos:** Sabala Encarnación
+
+**Matrícula:** 2025-1035
+
+**Carrera:** Desarrollo de Software
+
+**Materia:** Big Data
+
+**Tema:** Creación de la Arquitectura y Desarrollo del Proceso de Extracción (E de ETL)
+
+**Docente:** Francis Ramírez
+
+**Fecha de entrega:** 05/08/2026
+
+**Repositorio de GitHub:** https://github.com/MarioMahir/-SistemaAnalisisOpiniones
 
 ---
 
