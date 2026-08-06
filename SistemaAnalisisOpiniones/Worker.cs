@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Options;
 using SistemaAnalisisOpiniones.Application;
+using SistemaAnalisisOpiniones.Configuration;
 
 namespace SistemaAnalisisOpiniones;
 
@@ -6,12 +8,21 @@ public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
     private readonly EtlRunner _runner;
+    private readonly DwRunner _dwRunner;
+    private readonly DwOptions _dwOptions;
     private readonly IHostApplicationLifetime _lifetime;
 
-    public Worker(ILogger<Worker> logger, EtlRunner runner, IHostApplicationLifetime lifetime)
+    public Worker(
+        ILogger<Worker> logger,
+        EtlRunner runner,
+        DwRunner dwRunner,
+        IOptions<DwOptions> dwOptions,
+        IHostApplicationLifetime lifetime)
     {
         _logger = logger;
         _runner = runner;
+        _dwRunner = dwRunner;
+        _dwOptions = dwOptions.Value;
         _lifetime = lifetime;
     }
 
@@ -33,6 +44,16 @@ public class Worker : BackgroundService
             var logPath = Path.Combine(AppContext.BaseDirectory, "etl_rejected_log.csv");
             await File.WriteAllTextAsync(logPath, ReportPrinter.BuildFullRejectedLog(informe.Cargas), stoppingToken);
             Console.WriteLine($"Log completo de registros rechazados: {logPath}");
+
+            if (_dwOptions.Enabled)
+            {
+                var cargasDw = await _dwRunner.RunAsync(stoppingToken);
+                Console.WriteLine(ReportPrinter.BuildDwSummary(cargasDw));
+            }
+            else
+            {
+                _logger.LogInformation("Carga del Data Warehouse deshabilitada por configuración.");
+            }
 
             _logger.LogInformation("Proceso ETL finalizado.");
         }

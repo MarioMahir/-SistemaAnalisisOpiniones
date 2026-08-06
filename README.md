@@ -1,6 +1,6 @@
-# Sistema de Análisis de Opiniones de Clientes — Proceso ETL (Extracción)
+# Sistema de Análisis de Opiniones de Clientes — Proceso ETL
 
-Worker Service en **.NET 8** que implementa la fase de **extracción (E de ETL)** desde tres fuentes heterogéneas y guarda los datos validados en las tablas de *staging* de SQL Server.
+Worker Service en **.NET 8** que implementa el proceso ETL del sistema: **extrae** de tres fuentes heterogéneas, **valida y carga** el *staging*, y **puebla las dimensiones** del Data Warehouse analítico (`SistemaAnalisisOpiniones_DW`, modelo estrella).
 
 | Fuente | Tecnología de extracción | Datos |
 |---|---|---|
@@ -25,9 +25,10 @@ Worker Service en **.NET 8** que implementa la fase de **extracción (E de ETL)*
 ## Ejecución
 
 ```bash
-# 1. Crear y sembrar la base de datos origen (una sola vez)
+# 1. Crear y sembrar la base de datos origen, y crear el Data Warehouse (una sola vez)
 sqlcmd -S localhost -E -i scripts/01_crear_tiendaweborigen.sql
 sqlcmd -S localhost -E -f 65001 -i scripts/02_sembrar_resenas.sql
+sqlcmd -S localhost -E -i scripts/03_crear_datawarehouse.sql
 
 # 2. Levantar la API de comentarios sociales
 dotnet run --project TiendaSocialApi
@@ -36,7 +37,7 @@ dotnet run --project TiendaSocialApi
 dotnet run --project SistemaAnalisisOpiniones
 ```
 
-Al finalizar, el Worker imprime el resumen de extracción (registros y duración por fuente) y de carga (insertados y rechazados por tabla), y genera `etl_rejected_log.csv` con el detalle de los registros rechazados.
+Al finalizar, el Worker imprime el resumen de extracción (registros y duración por fuente), el de carga al staging (insertados y rechazados por tabla) y el de carga de dimensiones del DW (insertados y existentes por dimensión), y genera `etl_rejected_log.csv` con el detalle de los registros rechazados. La carga de dimensiones es incremental e idempotente: puede ejecutarse las veces que sea sin duplicar registros.
 
 ## Configuración
 

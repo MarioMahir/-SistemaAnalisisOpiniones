@@ -27,6 +27,28 @@ public static class ReportPrinter
         return sb.ToString();
     }
 
+    public static string BuildDwSummary(IReadOnlyList<ResultadoCargaDimension> cargas)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine();
+        sb.AppendLine("========================================================================");
+        sb.AppendLine("            RESUMEN DE LA CARGA DE DIMENSIONES DEL DW");
+        sb.AppendLine("========================================================================");
+        sb.AppendLine($"{"Dimensión",-20}{"Leídos",10}{"Insertados",12}{"Existentes",12}{"Duración",10}{"Estado",8}");
+        sb.AppendLine(new string('-', 72));
+
+        foreach (var c in cargas)
+        {
+            var estado = c.Exitoso ? "OK" : "ERROR";
+            sb.AppendLine($"{c.Dimension,-20}{c.Leidos,10}{c.Insertados,12}{c.Existentes,12}{c.DuracionMs + " ms",10}{estado,8}");
+            if (!c.Exitoso && !string.IsNullOrWhiteSpace(c.Error))
+                sb.AppendLine($"    Motivo: {c.Error}");
+        }
+
+        sb.AppendLine("========================================================================");
+        return sb.ToString();
+    }
+
     public static string BuildSummary(IReadOnlyList<EtlResult> results)
     {
         var sb = new StringBuilder();
