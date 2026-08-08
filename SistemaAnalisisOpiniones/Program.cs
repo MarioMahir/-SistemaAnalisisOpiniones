@@ -40,8 +40,12 @@ builder.Services.AddSingleton<DimFechaLoader>();
 builder.Services.AddSingleton<DimFuenteLoader>();
 builder.Services.AddSingleton<DimSentimientoLoader>();
 
+// Cargador de la tabla de hechos (limpieza + carga full-refresh).
+builder.Services.AddSingleton<FactOpinionLoader>();
+
 builder.Services.AddSingleton<EtlRunner>();
 builder.Services.AddSingleton<DwRunner>();
+builder.Services.AddSingleton<FactRunner>();
 builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();

@@ -22,8 +22,8 @@ public class ResenaWebLoader : StagingLoaderBase<ResenaWebDto>
         HashSet<string> seenKeys, EtlResult result, CancellationToken ct)
     {
         var id = record.IdReview?.Trim();
-        var idCliente = record.IdCliente?.Trim();
-        var idProducto = record.IdProducto?.Trim();
+        var idCliente = Validation.NormalizarIdOrigen(record.IdCliente);
+        var idProducto = Validation.NormalizarIdOrigen(record.IdProducto);
         var comentario = record.Comentario?.Trim();
         var ratingTexto = record.Rating?.Trim();
 

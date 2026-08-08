@@ -22,9 +22,9 @@ public class ComentarioSocialLoader : StagingLoaderBase<ComentarioSocialDto>
         HashSet<string> seenKeys, EtlResult result, CancellationToken ct)
     {
         var id = record.IdComment?.Trim();
-        var idClienteRaw = record.IdCliente?.Trim();
+        var idClienteRaw = Validation.NormalizarIdOrigen(record.IdCliente);
         var idCliente = Validation.IsRequired(idClienteRaw) ? idClienteRaw : null;
-        var idProducto = record.IdProducto?.Trim();
+        var idProducto = Validation.NormalizarIdOrigen(record.IdProducto);
         var fuente = record.Fuente?.Trim();
         var comentario = record.Comentario?.Trim();
 

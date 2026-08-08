@@ -11,8 +11,8 @@ namespace SistemaAnalisisOpiniones.Application;
 /// <summary>
 /// Orquesta la carga de las dimensiones del Data Warehouse a partir del
 /// staging ya poblado. El orden es libre entre dimensiones (ninguna depende
-/// de otra); la tabla de hechos, que sí depende de todas, corresponde a una
-/// fase posterior del proyecto.
+/// de otra); la tabla de hechos, que sí depende de todas, se carga después
+/// en FactRunner.
 /// </summary>
 public class DwRunner
 {

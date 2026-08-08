@@ -9,6 +9,7 @@ public class Worker : BackgroundService
     private readonly ILogger<Worker> _logger;
     private readonly EtlRunner _runner;
     private readonly DwRunner _dwRunner;
+    private readonly FactRunner _factRunner;
     private readonly DwOptions _dwOptions;
     private readonly IHostApplicationLifetime _lifetime;
 
@@ -16,12 +17,14 @@ public class Worker : BackgroundService
         ILogger<Worker> logger,
         EtlRunner runner,
         DwRunner dwRunner,
+        FactRunner factRunner,
         IOptions<DwOptions> dwOptions,
         IHostApplicationLifetime lifetime)
     {
         _logger = logger;
         _runner = runner;
         _dwRunner = dwRunner;
+        _factRunner = factRunner;
         _dwOptions = dwOptions.Value;
         _lifetime = lifetime;
     }
@@ -49,6 +52,9 @@ public class Worker : BackgroundService
             {
                 var cargasDw = await _dwRunner.RunAsync(stoppingToken);
                 Console.WriteLine(ReportPrinter.BuildDwSummary(cargasDw));
+
+                var informeFact = await _factRunner.RunAsync(stoppingToken);
+                Console.WriteLine(ReportPrinter.BuildFactSummary(informeFact));
             }
             else
             {

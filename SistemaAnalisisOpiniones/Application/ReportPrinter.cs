@@ -49,6 +49,45 @@ public static class ReportPrinter
         return sb.ToString();
     }
 
+    public static string BuildFactSummary(InformeCargaFact informe)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine();
+        sb.AppendLine("========================================================================");
+        sb.AppendLine("              RESUMEN DE LA CARGA DE Fact_Opinion");
+        sb.AppendLine("========================================================================");
+        sb.AppendLine($"Limpieza previa: {informe.FilasEliminadasLimpieza} filas eliminadas (TRUNCATE, {informe.DuracionLimpiezaMs} ms)");
+        sb.AppendLine(new string('-', 72));
+        sb.AppendLine($"{"Fuente staging",-24}{"Leídos",10}{"Insertados",12}{"Rechazados",12}{"Duración",10}");
+        sb.AppendLine(new string('-', 72));
+
+        int totalLeidos = 0, totalInsertados = 0, totalRechazados = 0;
+        foreach (var c in informe.Cargas)
+        {
+            sb.AppendLine($"{c.Fuente,-24}{c.Leidos,10}{c.Insertados,12}{c.Rechazados,12}{c.DuracionMs + " ms",10}");
+            if (!c.Exitoso && !string.IsNullOrWhiteSpace(c.Error))
+                sb.AppendLine($"    ERROR: {c.Error}");
+            totalLeidos += c.Leidos;
+            totalInsertados += c.Insertados;
+            totalRechazados += c.Rechazados;
+        }
+
+        sb.AppendLine(new string('-', 72));
+        sb.AppendLine($"{"TOTAL",-24}{totalLeidos,10}{totalInsertados,12}{totalRechazados,12}");
+        sb.AppendLine("========================================================================");
+
+        foreach (var c in informe.Cargas.Where(c => c.MotivosRechazo.Count > 0))
+        {
+            sb.AppendLine($"--- Rechazados en Fact_Opinion desde {c.Fuente} ({c.MotivosRechazo.Count}) ---");
+            foreach (var motivo in c.MotivosRechazo.Take(10))
+                sb.AppendLine($"  {motivo}");
+            if (c.MotivosRechazo.Count > 10)
+                sb.AppendLine($"  ... y {c.MotivosRechazo.Count - 10} más");
+        }
+
+        return sb.ToString();
+    }
+
     public static string BuildSummary(IReadOnlyList<EtlResult> results)
     {
         var sb = new StringBuilder();
