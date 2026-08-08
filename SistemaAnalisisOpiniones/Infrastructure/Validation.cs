@@ -15,14 +15,6 @@ public static class Validation
     public static bool TryParseInt(string? value, out int result) =>
         int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
 
-    /// <summary>
-    /// Homogeneiza los identificadores heterogéneos de las fuentes: las
-    /// reseñas web y los comentarios sociales usan IDs con prefijo y ceros
-    /// a la izquierda ('C007', 'P016') mientras los catálogos maestros usan
-    /// numéricos planos ('7', '16'). Si el valor tiene formato letra(s) +
-    /// dígitos se devuelve la parte numérica sin ceros a la izquierda; en
-    /// cualquier otro caso se devuelve tal cual.
-    /// </summary>
     public static string? NormalizarIdOrigen(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))

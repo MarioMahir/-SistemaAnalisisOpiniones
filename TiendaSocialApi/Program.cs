@@ -6,7 +6,6 @@ using TiendaSocialApi;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-// Los comentarios se cargan una sola vez al arrancar y se sirven desde memoria.
 var comentarios = CargarComentarios(app.Environment.ContentRootPath, app.Logger);
 
 app.MapGet("/api/comments", (string? fuente) =>

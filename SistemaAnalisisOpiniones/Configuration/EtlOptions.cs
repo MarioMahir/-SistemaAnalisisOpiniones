@@ -1,6 +1,5 @@
 namespace SistemaAnalisisOpiniones.Configuration;
 
-/// <summary>Configuración general del proceso ETL (destino staging y reporte).</summary>
 public class EtlOptions
 {
     public string ConnectionString { get; set; } = "";

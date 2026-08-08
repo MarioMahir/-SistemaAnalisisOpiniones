@@ -4,12 +4,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.DwLoaders;
 
-/// <summary>
-/// Carga Dim_Cliente desde la tabla Clientes del staging.
-/// La clave de negocio es IdClienteOrigen (el IdCliente del sistema fuente);
-/// la clave sustituta IdClienteDim la genera el DW con IDENTITY.
-/// Pais, RangoEdad y TipoCliente quedan NULL hasta que la fuente los provea.
-/// </summary>
 public class DimClienteLoader : DimensionLoaderBase
 {
     public DimClienteLoader(ILogger<DimClienteLoader> logger) : base(logger) { }

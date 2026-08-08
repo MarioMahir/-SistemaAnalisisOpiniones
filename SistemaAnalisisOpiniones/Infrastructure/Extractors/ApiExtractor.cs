@@ -7,10 +7,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.Extractors;
 
-/// <summary>
-/// Extrae los comentarios de redes sociales consumiendo la API REST
-/// (TiendaSocialApi) mediante IHttpClientFactory.
-/// </summary>
 public class ApiExtractor : ExtractorBase
 {
     public const string HttpClientName = "TiendaSocialApi";

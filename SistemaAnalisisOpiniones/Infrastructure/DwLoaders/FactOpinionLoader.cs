@@ -5,21 +5,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.DwLoaders;
 
-/// <summary>
-/// Carga Fact_Opinion consolidando las tres fuentes del staging
-/// (Encuestas, ResenasWeb y ComentariosSociales). Antes de cargar,
-/// la fase de limpieza vacía la tabla con TRUNCATE, de modo que cada
-/// corrida deja la tabla de hechos como una foto completa y consistente
-/// del staging (carga full-refresh idempotente).
-///
-/// Transformaciones aplicadas por fuente:
-///  - Encuestas: puntaje y sentimiento vienen dados en el CSV.
-///  - ResenasWeb: el Rating 1-5 es el puntaje; el sentimiento se deriva
-///    (4-5 Positiva, 3 Neutra, 1-2 Negativa).
-///  - ComentariosSociales: no traen puntaje (queda NULL); sin un motor de
-///    NLP el sentimiento se clasifica Neutra, y el cliente puede ser
-///    anónimo (IdClienteDim NULL).
-/// </summary>
 public class FactOpinionLoader
 {
     private readonly ILogger<FactOpinionLoader> _logger;
@@ -32,7 +17,6 @@ public class FactOpinionLoader
     private Dictionary<string, int> _sentimientos = new();
     private HashSet<int> _fechas = new();
 
-    /// <summary>Fase de limpieza: vacía Fact_Opinion y reinicia su IDENTITY.</summary>
     public async Task<(long FilasEliminadas, long DuracionMs)> LimpiarAsync(SqlConnection dw, CancellationToken ct)
     {
         var stopwatch = Stopwatch.StartNew();
@@ -41,8 +25,6 @@ public class FactOpinionLoader
         await using (var conteo = new SqlCommand("SELECT COUNT_BIG(*) FROM Fact_Opinion", dw))
             filas = (long)(await conteo.ExecuteScalarAsync(ct))!;
 
-        // TRUNCATE es válido aquí: Fact_Opinion referencia a las dimensiones,
-        // pero ninguna tabla la referencia a ella.
         await using (var truncate = new SqlCommand("TRUNCATE TABLE Fact_Opinion", dw))
             await truncate.ExecuteNonQueryAsync(ct);
 
@@ -54,7 +36,6 @@ public class FactOpinionLoader
         return (filas, stopwatch.ElapsedMilliseconds);
     }
 
-    /// <summary>Carga en memoria los mapas clave de negocio → clave sustituta de las dimensiones.</summary>
     public async Task PrecargarDimensionesAsync(SqlConnection dw, CancellationToken ct)
     {
         _clientes = await CargarMapaAsync(dw, "SELECT IdClienteOrigen, IdClienteDim FROM Dim_Cliente", ct);

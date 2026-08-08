@@ -4,11 +4,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.DwLoaders;
 
-/// <summary>
-/// Carga Dim_Producto desde la tabla Productos del staging.
-/// La clave de negocio es IdProductoOrigen; la dimensión se mantiene
-/// deliberadamente desnormalizada (Categoria como columna plana).
-/// </summary>
 public class DimProductoLoader : DimensionLoaderBase
 {
     public DimProductoLoader(ILogger<DimProductoLoader> logger) : base(logger) { }

@@ -4,11 +4,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.DwLoaders;
 
-/// <summary>
-/// Asegura el catálogo Dim_Fuente: los tres canales por los que llegan
-/// opiniones. Es una dimensión estática pequeña; la carga verifica que
-/// cada valor exista e inserta los que falten.
-/// </summary>
 public class DimFuenteLoader : DimensionLoaderBase
 {
     private static readonly (string Tipo, string Descripcion)[] Catalogo =

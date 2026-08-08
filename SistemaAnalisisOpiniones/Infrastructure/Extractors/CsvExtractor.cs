@@ -6,10 +6,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.Extractors;
 
-/// <summary>
-/// Extrae las encuestas internas y los catálogos (clientes, productos,
-/// fuentes de dato) desde archivos CSV usando CsvHelper.
-/// </summary>
 public class CsvExtractor : ExtractorBase
 {
     private readonly CsvFuenteOptions _options;

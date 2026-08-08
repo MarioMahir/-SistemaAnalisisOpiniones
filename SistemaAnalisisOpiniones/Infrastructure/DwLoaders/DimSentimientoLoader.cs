@@ -4,10 +4,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.DwLoaders;
 
-/// <summary>
-/// Asegura el catálogo Dim_Sentimiento con las tres clasificaciones
-/// válidas del modelo (coinciden con el CHECK de la tabla).
-/// </summary>
 public class DimSentimientoLoader : DimensionLoaderBase
 {
     private static readonly string[] Catalogo = { "Positiva", "Negativa", "Neutra" };

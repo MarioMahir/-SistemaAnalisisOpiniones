@@ -5,12 +5,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.DwLoaders;
 
-/// <summary>
-/// Plantilla común de los cargadores de dimensiones del Data Warehouse:
-/// mide la duración con Stopwatch, captura excepciones y registra el
-/// resultado con ILogger. La carga es incremental: solo se insertan los
-/// registros que aún no existen en la dimensión.
-/// </summary>
 public abstract class DimensionLoaderBase
 {
     protected readonly ILogger Logger;
@@ -56,7 +50,6 @@ public abstract class DimensionLoaderBase
     protected abstract Task EjecutarCargaAsync(
         SqlConnection staging, SqlConnection dw, ResultadoCargaDimension resultado, CancellationToken ct);
 
-    /// <summary>Carga en memoria las claves de negocio ya presentes en la dimensión.</summary>
     protected static async Task<HashSet<string>> CargarClavesExistentesAsync(
         SqlConnection dw, string sql, CancellationToken ct)
     {

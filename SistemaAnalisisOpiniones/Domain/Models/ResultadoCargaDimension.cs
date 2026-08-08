@@ -1,10 +1,5 @@
 namespace SistemaAnalisisOpiniones.Domain.Models;
 
-/// <summary>
-/// Métricas de la carga de una dimensión del Data Warehouse:
-/// cuántos registros se leyeron del staging, cuántos se insertaron
-/// y cuántos ya existían (la carga es incremental e idempotente).
-/// </summary>
 public class ResultadoCargaDimension
 {
     public string Dimension { get; init; } = "";

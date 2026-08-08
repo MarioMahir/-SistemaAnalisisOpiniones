@@ -5,11 +5,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.Extractors;
 
-/// <summary>
-/// Plantilla común de los extractores: mide la duración con Stopwatch,
-/// captura cualquier excepción (una fuente caída no debe tumbar a las demás)
-/// y registra el resultado con ILogger.
-/// </summary>
 public abstract class ExtractorBase : IExtractor
 {
     protected readonly ILogger Logger;
@@ -52,6 +47,5 @@ public abstract class ExtractorBase : IExtractor
         return resultado;
     }
 
-    /// <summary>Extrae los registros y devuelve cuántos se obtuvieron.</summary>
     protected abstract Task<int> EjecutarExtraccionAsync(DatosExtraidos destino, CancellationToken ct);
 }

@@ -9,12 +9,6 @@ using SistemaAnalisisOpiniones.Infrastructure.Loaders;
 
 namespace SistemaAnalisisOpiniones.Application;
 
-/// <summary>
-/// Orquesta el proceso ETL en dos fases:
-/// 1) Extracción en paralelo de todas las fuentes habilitadas (CSV, BD, API).
-/// 2) Carga secuencial al staging, respetando las dependencias de integridad
-///    referencial (primero catálogos, luego opiniones).
-/// </summary>
 public class EtlRunner
 {
     private readonly EtlOptions _options;
@@ -53,7 +47,6 @@ public class EtlRunner
     {
         var total = Stopwatch.StartNew();
 
-        // ----- Fase 1: extracción en paralelo -----
         var datos = new DatosExtraidos();
         var activos = _extractores.Where(e => e.Habilitado).ToList();
 
@@ -68,7 +61,6 @@ public class EtlRunner
             "Fase de extracción completada: {Fuentes} fuentes en {DuracionMs} ms (en paralelo)",
             activos.Count, faseExtraccion.ElapsedMilliseconds);
 
-        // ----- Fase 2: carga secuencial al staging -----
         var faseCarga = Stopwatch.StartNew();
         var cargas = new List<EtlResult>();
         var context = new EtlContext();
@@ -76,12 +68,10 @@ public class EtlRunner
         await using var connection = new SqlConnection(_options.ConnectionString);
         await connection.OpenAsync(ct);
 
-        // Primero los catálogos (de ellos depende la integridad referencial)...
         cargas.Add(await _clienteLoader.RunAsync(datos.Clientes, connection, context, ct));
         cargas.Add(await _productoLoader.RunAsync(datos.Productos, connection, context, ct));
         cargas.Add(await _fuenteDatoLoader.RunAsync(datos.FuentesDato, connection, context, ct));
 
-        // ...y después las opiniones de cada canal.
         cargas.Add(await _encuestaLoader.RunAsync(datos.Encuestas, connection, context, ct));
         cargas.Add(await _resenaWebLoader.RunAsync(datos.Resenas, connection, context, ct));
         cargas.Add(await _comentarioSocialLoader.RunAsync(datos.Comentarios, connection, context, ct));

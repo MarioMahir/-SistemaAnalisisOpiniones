@@ -5,13 +5,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.DwLoaders;
 
-/// <summary>
-/// Carga Dim_Fecha con las fechas distintas en que ocurrieron opiniones
-/// (encuestas, reseñas web y comentarios sociales del staging).
-/// Los atributos del calendario (año, trimestre, mes, día de la semana)
-/// se calculan en la fase de transformación, en español.
-/// La clave IdFechaDim es una clave inteligente con formato AAAAMMDD.
-/// </summary>
 public class DimFechaLoader : DimensionLoaderBase
 {
     private static readonly CultureInfo Cultura = CultureInfo.GetCultureInfo("es-ES");

@@ -8,12 +8,6 @@ using SistemaAnalisisOpiniones.Infrastructure.DwLoaders;
 
 namespace SistemaAnalisisOpiniones.Application;
 
-/// <summary>
-/// Orquesta la fase de carga de la tabla de hechos: primero el proceso de
-/// limpieza (TRUNCATE de Fact_Opinion) y luego la carga desde las tres
-/// fuentes del staging. Debe ejecutarse después de DwRunner, porque la
-/// tabla de hechos depende de que las cinco dimensiones estén pobladas.
-/// </summary>
 public class FactRunner
 {
     private readonly EtlOptions _etlOptions;

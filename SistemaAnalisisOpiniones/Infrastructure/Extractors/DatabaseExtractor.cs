@@ -7,12 +7,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.Extractors;
 
-/// <summary>
-/// Extrae las reseñas del sitio web desde la base de datos relacional de
-/// origen (TiendaWebOrigen) ejecutando la consulta definida en configuración.
-/// Los valores se entregan como texto crudo: la validación y conversión de
-/// tipos ocurre después, en la fase de carga al staging.
-/// </summary>
 public class DatabaseExtractor : ExtractorBase
 {
     private readonly BaseDatosFuenteOptions _options;

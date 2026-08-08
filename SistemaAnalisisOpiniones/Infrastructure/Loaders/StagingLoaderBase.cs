@@ -4,10 +4,6 @@ using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.Loaders;
 
-/// <summary>
-/// Plantilla de carga al staging: valida fila a fila los registros ya
-/// extraídos, deduplica contra la base de datos y registra los rechazados.
-/// </summary>
 public abstract class StagingLoaderBase<TDto>
 {
     protected readonly ILogger Logger;
