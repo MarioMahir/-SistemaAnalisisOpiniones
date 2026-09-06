@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using SistemaAnalisisOpiniones.Application.Interfaces;
 using SistemaAnalisisOpiniones.Domain.Models;
 
 namespace SistemaAnalisisOpiniones.Infrastructure.DwLoaders;
@@ -8,8 +9,13 @@ namespace SistemaAnalisisOpiniones.Infrastructure.DwLoaders;
 public class FactOpinionLoader
 {
     private readonly ILogger<FactOpinionLoader> _logger;
+    private readonly ISentimentClassifier _classifier;
 
-    public FactOpinionLoader(ILogger<FactOpinionLoader> logger) => _logger = logger;
+    public FactOpinionLoader(ILogger<FactOpinionLoader> logger, ISentimentClassifier classifier)
+    {
+        _logger = logger;
+        _classifier = classifier;
+    }
 
     private Dictionary<string, int> _clientes = new();
     private Dictionary<string, int> _productos = new();
@@ -81,8 +87,10 @@ public class FactOpinionLoader
             tipoFuente: "RedSocial", origenTipo: "RedSocial",
             (reader, fila) =>
             {
+                // Los comentarios sociales no traen puntaje ni clasificación: se clasifican
+                // por palabras clave (transformación exigida por el SRS).
                 fila.Puntaje = null;
-                fila.Sentimiento = "Neutra";
+                fila.Sentimiento = _classifier.Clasificar(fila.Comentario);
             });
 
     private sealed class FilaFact
@@ -179,6 +187,7 @@ public class FactOpinionLoader
                 insert.Parameters.AddWithValue("@OrigenId", fila.OrigenId);
                 await insert.ExecuteNonQueryAsync(ct);
                 resultado.Insertados++;
+                resultado.PorSentimiento[fila.Sentimiento] = resultado.PorSentimiento.GetValueOrDefault(fila.Sentimiento) + 1;
             }
 
             resultado.Exitoso = true;

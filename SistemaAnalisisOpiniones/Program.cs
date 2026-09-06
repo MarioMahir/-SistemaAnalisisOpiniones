@@ -36,6 +36,7 @@ builder.Services.AddSingleton<DimFechaLoader>();
 builder.Services.AddSingleton<DimFuenteLoader>();
 builder.Services.AddSingleton<DimSentimientoLoader>();
 
+builder.Services.AddSingleton<ISentimentClassifier, SentimentClassifier>();
 builder.Services.AddSingleton<FactOpinionLoader>();
 
 builder.Services.AddSingleton<EtlRunner>();

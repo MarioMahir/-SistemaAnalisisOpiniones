@@ -74,6 +74,12 @@ public static class ReportPrinter
 
         sb.AppendLine(new string('-', 72));
         sb.AppendLine($"{"TOTAL",-24}{totalLeidos,10}{totalInsertados,12}{totalRechazados,12}");
+        sb.AppendLine(new string('-', 72));
+        sb.AppendLine($"{"Clasificación",-24}{"Positiva",10}{"Negativa",12}{"Neutra",12}");
+        foreach (var c in informe.Cargas)
+        {
+            sb.AppendLine($"{c.Fuente,-24}{c.PorSentimiento.GetValueOrDefault("Positiva"),10}{c.PorSentimiento.GetValueOrDefault("Negativa"),12}{c.PorSentimiento.GetValueOrDefault("Neutra"),12}");
+        }
         sb.AppendLine("========================================================================");
 
         foreach (var c in informe.Cargas.Where(c => c.MotivosRechazo.Count > 0))

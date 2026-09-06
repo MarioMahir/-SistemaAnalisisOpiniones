@@ -10,6 +10,7 @@ public class ResultadoCargaFact
     public bool Exitoso { get; set; }
     public string? Error { get; set; }
     public List<string> MotivosRechazo { get; } = new();
+    public Dictionary<string, int> PorSentimiento { get; } = new();
 }
 
 public class InformeCargaFact
