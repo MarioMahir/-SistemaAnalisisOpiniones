@@ -1,0 +1,27 @@
+flowchart TD
+    A(["Inicio del Worker Service"]) --> B["Leer configuración<br/>(appsettings.json, sección Fuentes)"]
+    B --> C{"¿Fuente habilitada?<br/>(por cada IExtractor)"}
+    C -->|No| D["Registrar fuente omitida<br/>en el log"]
+    C -->|Sí| E["FASE 1 — EXTRACCIÓN EN PARALELO<br/>Task.WhenAll + Stopwatch por fuente"]
+
+    E --> E1["CsvExtractor<br/>clients, products,<br/>fuente_datos, surveys"]
+    E --> E2["DatabaseExtractor<br/>SELECT sobre<br/>TiendaWebOrigen.dbo.Resenas"]
+    E --> E3["ApiExtractor<br/>GET /api/comments<br/>(HttpClient)"]
+
+    E1 --> F["DatosExtraidos<br/>(contenedor en memoria)"]
+    E2 --> F
+    E3 --> F
+    D --> F
+
+    F --> G["FASE 2 — CARGA SECUENCIAL AL STAGING<br/>(orden por dependencias referenciales)"]
+    G --> H["1. Catálogos:<br/>Clientes → Productos → FuenteDatos"]
+    H --> I["2. Opiniones:<br/>Encuestas → ResenasWeb → ComentariosSociales"]
+
+    I --> J{"Validación por fila:<br/>obligatorios, formato,<br/>duplicados, integridad referencial"}
+    J -->|Válida| K["INSERT parametrizado<br/>en el staging"]
+    J -->|Inválida| L["Registrar rechazo<br/>con motivo"]
+
+    K --> M["Reporte en consola:<br/>métricas de extracción y carga"]
+    L --> M
+    M --> N["Generar etl_rejected_log.csv"]
+    N --> O(["Fin: detener la aplicación"])

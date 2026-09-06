@@ -487,4 +487,7 @@ $RECYCLE.BIN/
 etl_rejected_log.csv
 
 # Documentacion de entrega (se entrega por la plataforma, no en el repo)
-docs/
+# Documentos de entrega (con datos personales) fuera del repositorio; capturas y diagramas si se publican
+docs/*
+!docs/capturas/
+!docs/diagramas/
