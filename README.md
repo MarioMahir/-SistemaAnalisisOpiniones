@@ -1,6 +1,6 @@
 # Sistema de Análisis de Opiniones de Clientes — Proceso ETL
 
-Worker Service en **.NET 8** que consolida las opiniones que una tienda en línea recibe por tres canales distintos, las valida, las clasifica y las carga en un Data Warehouse con modelo estrella listo para consultas analíticas.
+Worker Service en **.NET 8** que consolida las opiniones que una tienda en línea recibe por tres canales distintos, las valida, las clasifica y las carga en un Data Warehouse con modelo estrella, más un **dashboard en ASP.NET Core + Chart.js** que muestra los indicadores de satisfacción y las tendencias de opinión.
 
 | Fuente | Tecnología de extracción | Datos |
 |---|---|---|
@@ -8,7 +8,7 @@ Worker Service en **.NET 8** que consolida las opiniones que una tienda en líne
 | Base de datos relacional (`TiendaWebOrigen`) | ADO.NET (`Microsoft.Data.SqlClient`) | Reseñas del sitio web |
 | API REST (`TiendaSocialApi`) | `IHttpClientFactory` | Comentarios de redes sociales |
 
-![Arquitectura](docs/diagramas/arquitectura.png)
+![Dashboard](docs/capturas/dashboard-completo.png)
 
 ## Qué hace el proceso
 
@@ -17,12 +17,29 @@ Worker Service en **.NET 8** que consolida las opiniones que una tienda en líne
 3. **Carga de dimensiones** (`SistemaAnalisisOpiniones_DW`). `Dim_Cliente`, `Dim_Producto`, `Dim_Fecha`, `Dim_Fuente` y `Dim_Sentimiento` se cargan de forma incremental e idempotente: el proceso puede repetirse sin duplicar registros.
 4. **Transformación y carga de hechos.** `Fact_Opinion` se limpia y se repuebla desde las tres tablas de staging resolviendo las claves sustitutas. La clasificación de sentimiento se obtiene de la fuente cuando existe (encuestas), se deriva del rating en las reseñas web (4-5 positiva, 3 neutra, 1-2 negativa) y se calcula **por palabras clave** en los comentarios sociales, que no traen puntaje.
 5. **Resumen en consola** de cada fase: registros y duración por fuente, insertados y rechazados por tabla, y distribución de sentimientos por fuente.
+6. **Dashboard interactivo** (`SistemaAnalisisOpiniones.Dashboard`) que consulta el Data Warehouse y muestra los KPI y las gráficas.
+
+![Arquitectura](docs/diagramas/arquitectura.png)
 
 ### Clasificador de sentimiento
 
 `SentimentClassifier` implementa el enfoque sencillo que pide el SRS: un léxico en español de términos positivos y negativos con peso, frases de varias palabras que se evalúan primero ("relación calidad-precio", "no volvería a comprar", "sin mayor novedad") e inversión de polaridad cuando el término viene precedido por una negación ("no lo recomiendo"). Ignora acentos y mayúsculas. El signo del puntaje total decide entre Positiva, Negativa y Neutra.
 
+### Dashboard
+
+Minimal API en ASP.NET Core que expone los indicadores del DW como JSON (`/api/resumen`, `/api/sentimientos`, `/api/fuentes`, `/api/tendencia`, `/api/productos`, `/api/productos/{id}/tendencia`, `/api/productos/{id}/opiniones`) y una página estática con Chart.js que los dibuja:
+
+- KPI: opiniones procesadas, satisfacción promedio, porcentaje de positivas y negativas, productos y clientes con opiniones.
+- Clasificación de opiniones (dona) y opiniones por canal apiladas por tono.
+- Tendencia mensual del porcentaje de positivas y negativas, del puntaje promedio y del volumen.
+- Productos con más opiniones y su porcentaje de satisfacción.
+- Filtro por producto y rango de fechas con la tendencia del producto y la lista de opiniones.
+
 ## Capturas
+
+| Dashboard: indicadores y clasificación | Dashboard: producto y rango de fechas |
+|---|---|
+| ![Dashboard](docs/capturas/dashboard-indicadores.png) | ![Producto](docs/capturas/dashboard-producto-fechas.png) |
 
 | Extracción y carga al staging | Dimensiones y Fact_Opinion |
 |---|---|
@@ -48,6 +65,7 @@ El diagrama de flujo completo del proceso está en [`docs/diagramas/flujo.png`](
 │   ├── Configuration/                 Opciones tipadas (Etl, Dw, Fuentes)
 │   └── Data/Csv/                      Encuestas y catálogos de origen
 ├── SistemaAnalisisOpiniones.Tests/    Pruebas xUnit del clasificador y de la validación
+├── SistemaAnalisisOpiniones.Dashboard/ Dashboard ASP.NET Core + Chart.js sobre el Data Warehouse (puerto 5190)
 ├── TiendaSocialApi/                   Minimal API que expone los comentarios sociales (puerto 5180)
 ├── scripts/                           Creación de las bases, siembra y consultas de indicadores
 └── docs/                              Diagramas y capturas
@@ -88,6 +106,9 @@ dotnet run --project SistemaAnalisisOpiniones
 # 4. Consultar los indicadores del Data Warehouse
 sqlcmd -S localhost -E -i scripts/04_consultas_indicadores.sql
 
+# 5. Abrir el dashboard en http://localhost:5190
+dotnet run --project SistemaAnalisisOpiniones.Dashboard
+
 # Pruebas
 dotnet test
 ```
@@ -99,6 +120,8 @@ set Etl__ConnectionString=Server=localhost\MSSQLSERVER01;Database=SistemaAnalisi
 set Dw__ConnectionString=Server=localhost\MSSQLSERVER01;Database=SistemaAnalisisOpiniones_DW;Trusted_Connection=True;TrustServerCertificate=True;
 set Fuentes__BaseDatos__ConnectionString=Server=localhost\MSSQLSERVER01;Database=TiendaWebOrigen;Trusted_Connection=True;TrustServerCertificate=True;
 ```
+
+El dashboard lee `Dw:ConnectionString` de su propio `appsettings.json` y acepta la misma variable `Dw__ConnectionString`.
 
 ### Datos de origen
 
