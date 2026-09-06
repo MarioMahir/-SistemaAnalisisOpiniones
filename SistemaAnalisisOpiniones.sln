@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiendaSocialApi", "TiendaSo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAnalisisOpiniones.Tests", "SistemaAnalisisOpiniones.Tests\SistemaAnalisisOpiniones.Tests.csproj", "{93838179-836E-4D49-AD8A-CBAD8BE0F10A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAnalisisOpiniones.Dashboard", "SistemaAnalisisOpiniones.Dashboard\SistemaAnalisisOpiniones.Dashboard.csproj", "{45C76E53-1748-412C-AC81-B3057737D144}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{93838179-836E-4D49-AD8A-CBAD8BE0F10A}.Release|x64.Build.0 = Release|Any CPU
 		{93838179-836E-4D49-AD8A-CBAD8BE0F10A}.Release|x86.ActiveCfg = Release|Any CPU
 		{93838179-836E-4D49-AD8A-CBAD8BE0F10A}.Release|x86.Build.0 = Release|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Debug|x64.Build.0 = Debug|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Debug|x86.Build.0 = Debug|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Release|x64.ActiveCfg = Release|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Release|x64.Build.0 = Release|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Release|x86.ActiveCfg = Release|Any CPU
+		{45C76E53-1748-412C-AC81-B3057737D144}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
