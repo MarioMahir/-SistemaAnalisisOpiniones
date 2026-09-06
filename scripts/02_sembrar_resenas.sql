@@ -1,10 +1,4 @@
-﻿-- =============================================================
--- Script: 02_sembrar_resenas.sql
--- Siembra la tabla dbo.Resenas con los datos historicos de
--- resenas del sitio web. Idempotente: limpia y recarga.
--- =============================================================
-
-USE TiendaWebOrigen;
+﻿USE TiendaWebOrigen;
 GO
 
 TRUNCATE TABLE dbo.Resenas;

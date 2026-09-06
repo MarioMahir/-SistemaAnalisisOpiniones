@@ -1,14 +1,3 @@
--- =============================================================
--- Script: 01_crear_tiendaweborigen.sql
--- Crea la base de datos origen TiendaWebOrigen con la tabla de
--- resenas del sitio web. Esta BD simula el sistema transaccional
--- de la tienda del cual el proceso ETL extrae las resenas.
---
--- Nota: Fecha y Rating se almacenan como texto porque el sistema
--- origen no garantiza datos limpios; la validacion y conversion
--- de tipos es responsabilidad de la fase de transformacion del ETL.
--- =============================================================
-
 IF DB_ID('TiendaWebOrigen') IS NULL
 BEGIN
     CREATE DATABASE TiendaWebOrigen;
